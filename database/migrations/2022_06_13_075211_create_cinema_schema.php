@@ -37,7 +37,53 @@ class CreateCinemaSchema extends Migration
      */
     public function up()
     {
-        throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
+        // throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
+        Schema::create('movies', function($table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+        
+        Schema::create('shows', function($table) {
+            $table->increments('id');
+            $table->integer('movie_id')->unsigned()->foreign('movie_id')->references('id')->on('movies')->onDelete('cascade');
+            $table->dateTime('start');
+            $table->dateTime('end');
+            $table->string('location');
+            $table->string('booking_status');
+            $table->timestamps();
+        });
+
+        Schema::create('prices', function($table) {
+            $table->increments('id');
+            $table->integer('show_id')->unsigned()->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');
+            $table->integer('premium_price_id')->unsigned()->foreign('premium_price_id')->references('id')->on('premium_prices')->onDelete('cascade');
+            $table->string('amount');
+            $table->timestamps();
+        });
+
+        Schema::create('premium_prices', function($table) {
+            $table->increments('id');
+            $table->integer('seat_type_id')->unsigned()->foreign('seat_type_id')->references('id')->on('seat_types')->onDelete('cascade');
+            $table->string('percentage_premium');
+            $table->timestamps();
+        });
+
+        Schema::create('seat_types', function($table) {
+            $table->increments('id');
+            $table->string('type');
+            $table->timestamps();
+        });
+
+        Schema::create('seats', function($table) {
+            $table->increments('id');
+            $table->integer('show_id')->unsigned()->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');
+            $table->integer('seat_type_id')->unsigned()->foreign('seat_type_id')->references('id')->on('seat_types')->onDelete('cascade');
+            $table->string('seat');
+            $table->string('seat_status');
+            $table->string('seat_position');
+            $table->timestamps();
+        });
     }
 
     /**
